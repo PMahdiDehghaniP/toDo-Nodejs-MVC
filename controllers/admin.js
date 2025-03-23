@@ -1,7 +1,8 @@
 const Todo = require("../models/toDo");
+const { v4: uuidv4 } = require("uuid");
 const addTodo = (req, res) => {
   if (!req.body.todo) return res.redirect("/");
-  const taskId = Math.floor(Math.random() * 1000);
+  const taskId = uuidv4();
   const newTodo = new Todo(taskId, req.body.todo);
   newTodo.save((err) => {
     if (!err) return res.redirect("/");
@@ -12,7 +13,7 @@ const addTodo = (req, res) => {
   });
 };
 const deleteToDoTask = (req, res) => {
-  const taskId = Number(req.params.id);
+  const taskId = req.params.id;
   Todo.deleteTask(taskId, (err) => {
     if (!err) res.redirect("/");
     else {
@@ -23,7 +24,7 @@ const deleteToDoTask = (req, res) => {
 };
 
 const doTask = (req, res) => {
-  const taskId = Number(req.params.id);
+  const taskId = req.params.id;
   Todo.changeTaskStatusToDone(taskId, (err) => {
     if (!err) res.redirect("/");
     else {
