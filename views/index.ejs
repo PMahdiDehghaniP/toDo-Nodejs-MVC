@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/bootstrap-rtl.css" />
+    <link rel="stylesheet" href="css/font-awesome.css" />
+    <title><%= pageTitle %></title>
+  </head>
+  <body class="rtl">
+    <div class="form-group">
+      <h1>کارهای <small>روزمره</small></h1>
+      <form
+        action="/admin/add-todo"
+        role="form"
+        class="row w-50 justify-content-center mx-auto"
+        method="POST"
+      >
+        <div class="input-group">
+          <input
+            type="text"
+            name="todo"
+            class="form-control w-50"
+            placeholder="کار امروز"
+          />
+          <div class="input-group-prepend">
+            <button type="submit" class="btn btn-primary fa fa-plus" />
+          </div>
+        </div>
+      </form>
+      <div class="mx-auto w-50 mb-3 alert alert-primary row">
+        <p class="d-inline col">
+          کارهای انجام شده :
+          <span class="badge badge-success badge-pill"
+            ><%= completedTasksCount %></span
+          >
+        </p>
+        <p class="d-inline col">
+          کارهای باقی مانده امروز :
+          <span class="badge badge-warning badge-pill"
+            ><%= unCompledtedTasksCount %></span
+          >
+        </p>
+      </div>
+    </div>
+    <div>
+      <% if (todoData.length > 0) {%>
+        <ul class="list-group w-50 mx-auto">
+          <% todoData.forEach((task, index) => { %>
+          <li class="list-group-item d-flex justify-content-between align-items-center my-1
+            <%= task.completed ? "bg-success text-white" : "bg-secondary text-white" %>">
+            
+            <span class="fw-bold <%= task.completed ? 'opacity-75 text-light' : '' %>">
+              <% if (!task.completed) { %>
+                <%= task.text %>
+              <% } else { %>
+                <del><%= task.text %></del>
+              <% } %>
+            </span>
+        
+            <div>
+              <% if (!task.completed) { %>
+              <a href="/admin/complete-task/<%= task.id %>" class="btn btn-light me-2">
+                <i class="fa fa-check text-success"></i>
+              </a>
+              <% } %>
+              
+              <a href="/admin/delete-task/<%= task.id %>" class="btn btn-light">
+                <i class="fa fa-trash text-danger"></i>
+              </a>
+            </div>
+        
+          </li>
+          <% }) %>
+        </ul>
+        
+        
+        
+      <%} else {%>
+      <div class="alert alert-warning w-50 mx-auto">
+        <p>هیچ کاری برای امروز ثبت نشده است</p>
+      </div>
+      <%}%>
+    </div>
+  </body>
+</html>
