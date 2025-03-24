@@ -1,15 +1,16 @@
 const Todo = require("../models/toDo");
 
 const showTasks = (req, res) => {
-  Todo.fetchAll().then((data) => {
-    const completedTasksCount = Todo.getCompletedTasksCount(data);
-    const unCompledtedTasksCount = Todo.getUnCompletedTasksCount(data);
-    res.render("index", {
-      pageTitle: "Mahdi To Do List",
-      todoData: data,
-      completedTasksCount,
-      unCompledtedTasksCount,
+  Todo.count({ where: { completed: true } }).then((completedTasksCount) => {
+    Todo.findAll().then((todoData) => {
+      res.render("index", {
+        pageTitle: "Mahdi To Do List",
+        todoData,
+        completedTasksCount,
+        unCompledtedTasksCount: todoData.length - completedTasksCount,
+      });
     });
   });
 };
+
 module.exports = { showTasks };

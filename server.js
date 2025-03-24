@@ -5,6 +5,7 @@ const app = express();
 const adminRoutes = require("./routes/admin");
 const { indexRouter } = require("./routes");
 const { get404 } = require("./controllers/404controller");
+const sequelize = require("./utils/database");
 
 //EJS
 app.set("view engine", "ejs");
@@ -25,4 +26,8 @@ app.use("/admin", adminRoutes);
 app.use(get404);
 //end404
 
-app.listen(3000, () => console.log("Server is running on port 3000"));
+//Connect to DB and Start Server
+sequelize.sync().then((result) => {
+  console.log(result);
+  app.listen(3000, () => console.log("Server is running on port 3000"));
+});

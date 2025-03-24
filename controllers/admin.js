@@ -1,37 +1,30 @@
 const Todo = require("../models/toDo");
-const { v4: uuidv4 } = require("uuid");
 const addTodo = (req, res) => {
   if (!req.body.todo) return res.redirect("/");
-  const taskId = uuidv4();
-  const newTodo = new Todo(taskId, req.body.todo);
-  newTodo.save((err) => {
-    if (!err) return res.redirect("/");
-    else {
-      res.redirect("/");
-      console.log(err);
-    }
+  Todo.create({ text: req.body.todo }).then((result) => {
+    res.redirect("/");
   });
 };
 const deleteToDoTask = (req, res) => {
-  const taskId = req.params.id;
-  Todo.deleteTask(taskId, (err) => {
-    if (!err) res.redirect("/");
-    else {
-      res.redirect("/");
-      console.log(err);
-    }
+  const taskId = Number(req.params.id);
+  Todo.destroy({ where: { id: taskId } }).then((result) => {
+    res.redirect("/");
   });
 };
 
 const doTask = (req, res) => {
   const taskId = req.params.id;
-  Todo.changeTaskStatusToDone(taskId, (err) => {
-    if (!err) res.redirect("/");
-    else {
+  Todo.findByPk(taskId)
+    .then((task) => {
+      task.completed = true;
+      return task.save();
+    })
+    .then(() => {
       res.redirect("/");
-      console.log(err);
-    }
-  });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 module.exports = {
   addTodo,
