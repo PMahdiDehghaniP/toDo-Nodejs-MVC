@@ -1,30 +1,33 @@
 const Todo = require("../models/toDo");
-const addTodo = (req, res) => {
+const addTodo = async (req, res) => {
   if (!req.body.todo) return res.redirect("/");
-  Todo.create({ text: req.body.todo }).then((result) => {
+  try {
+    await Todo.create({ text: req.body.todo });
     res.redirect("/");
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
-const deleteToDoTask = (req, res) => {
+const deleteToDoTask = async (req, res) => {
   const taskId = Number(req.params.id);
-  Todo.destroy({ where: { id: taskId } }).then((result) => {
+  try {
+    await Todo.destroy({ where: { id: taskId } });
     res.redirect("/");
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const doTask = (req, res) => {
+const doTask = async (req, res) => {
   const taskId = req.params.id;
-  Todo.findByPk(taskId)
-    .then((task) => {
-      task.completed = true;
-      return task.save();
-    })
-    .then(() => {
-      res.redirect("/");
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  try {
+    const selecedTask = await Todo.findByPk(taskId);
+    selecedTask.completed = !selecedTask.completed;
+    await selecedTask.save();
+    res.redirect("/");
+  } catch (error) {
+    console.log(error);
+  }
 };
 module.exports = {
   addTodo,
